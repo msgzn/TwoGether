@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/TwoGether.Api/TwoGether.Api.csproj" />
+    <Project Path="src/TwoGether.Application/TwoGether.Application.csproj" />
+    <Project Path="src/TwoGether.Domain/TwoGether.Domain.csproj" />
+    <Project Path="src/TwoGether.Infrastructure/TwoGether.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TwoGether.Application.Tests/TwoGether.Application.Tests.csproj" />
+    <Project Path="tests/TwoGether.Domain.Tests/TwoGether.Domain.Tests.csproj" />
+  </Folder>
+</Solution>
