@@ -4,6 +4,7 @@
     <Project Path="src/TwoGether.Application/TwoGether.Application.csproj" />
     <Project Path="src/TwoGether.Domain/TwoGether.Domain.csproj" />
     <Project Path="src/TwoGether.Infrastructure/TwoGether.Infrastructure.csproj" />
+    <Project Path="src/TwoGether.Persistence/TwoGether.Persistence.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/TwoGether.Application.Tests/TwoGether.Application.Tests.csproj" />

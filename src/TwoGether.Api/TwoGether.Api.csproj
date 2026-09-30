@@ -13,6 +13,11 @@
   <ItemGroup>
     <ProjectReference Include="..\TwoGether.Application\TwoGether.Application.csproj" />
     <ProjectReference Include="..\TwoGether.Infrastructure\TwoGether.Infrastructure.csproj" />
+    <ProjectReference Include="..\TwoGether.Persistence\TwoGether.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>
