@@ -30,7 +30,6 @@ public class LayerDependencyTests
     [Fact]
     public void Application_does_not_depend_on_outer_layers_or_db_provider()
     {
-        // EF Core (IAppDbContext) and NetTopologySuite are allowed, a concrete provider is not.
         var result = Types.InAssembly(ApplicationAssembly).ShouldNot()
             .HaveDependencyOnAny(Infrastructure, Persistence, Api, "Npgsql")
             .GetResult();

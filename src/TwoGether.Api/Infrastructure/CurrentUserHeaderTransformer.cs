@@ -3,10 +3,6 @@ using Microsoft.OpenApi;
 
 namespace TwoGether.Api.Infrastructure;
 
-/// <summary>
-/// Adds the X-User-Id header to the OpenAPI document so Swagger UI shows an "Authorize" button for it.
-/// Goes away together with <see cref="HeaderCurrentUser"/> once real auth is in place.
-/// </summary>
 internal sealed class CurrentUserHeaderTransformer : IOpenApiDocumentTransformer
 {
     public Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken ct)
