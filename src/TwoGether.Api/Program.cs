@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Mediator;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Serilog;
@@ -21,7 +22,7 @@ try
         .ReadFrom.Services(services));
 
     builder.Services
-        .AddApplication()
+        .AddApplication(builder.Configuration)
         .AddInfrastructure(builder.Configuration)
         .AddPersistence(builder.Configuration);
 
@@ -31,7 +32,8 @@ try
         options.PipelineBehaviors = [typeof(ValidationBehavior<,>)];
     });
 
-    builder.Services.AddControllers();
+    builder.Services.AddControllers()
+        .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
     builder.Services.AddApiAuthentication();
     builder.Services.AddOpenApi(options => options.AddDocumentTransformer<BearerSecuritySchemeTransformer>());
     builder.Services.AddProblemDetails();

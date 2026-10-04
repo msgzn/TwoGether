@@ -10,5 +10,29 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  osrm:
+    image: ghcr.io/project-osrm/osrm-backend:v6.0.0
+    command: osrm-routed --algorithm mld /data/almaty.osrm
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./osrm-data:/data
+
+  osrm-frontend:
+    image: osrm/osrm-frontend:latest
+    command: >
+      sh -c "sed -i \"s/\\['Mapbox Streets'\\]/['openstreetmap.org']/\" src/index.js
+      && npm run build
+      && node_modules/.bin/budo src/index.js --serve=bundle.js --port 9966"
+    environment:
+      OSRM_BACKEND: http://localhost:5000
+      OSRM_CENTER: 43.2389,76.8897
+      OSRM_ZOOM: 12
+      OSRM_LANGUAGE: ru
+    ports:
+      - "9966:9966"
+    depends_on:
+      - osrm
+
 volumes:
   pgdata:

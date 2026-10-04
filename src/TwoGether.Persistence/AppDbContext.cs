@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using TwoGether.Application.Abstractions;
 using TwoGether.Domain.Auth;
 using TwoGether.Domain.Common;
+using TwoGether.Domain.Matches;
+using TwoGether.Domain.Routes;
 using TwoGether.Domain.Users;
 using TwoGether.Domain.Vehicles;
 
@@ -14,6 +16,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Vehicle> Vehicles => Set<Vehicle>();
     public DbSet<PhoneVerification> PhoneVerifications => Set<PhoneVerification>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<DriverRoute> DriverRoutes => Set<DriverRoute>();
+    public DbSet<PassengerRoute> PassengerRoutes => Set<PassengerRoute>();
+    public DbSet<RouteMatch> RouteMatches => Set<RouteMatch>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

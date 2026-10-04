@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using NetTopologySuite.Geometries;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TwoGether.Persistence;
 
@@ -139,6 +140,240 @@ namespace TwoGether.Persistence.Migrations
                     b.ToTable("refresh_tokens", (string)null);
                 });
 
+            modelBuilder.Entity("TwoGether.Domain.Matches.RouteMatch", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("CommonDays")
+                        .HasColumnType("integer")
+                        .HasColumnName("common_days");
+
+                    b.Property<Guid>("DriverId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("driver_id");
+
+                    b.Property<Guid>("DriverRouteId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("driver_route_id");
+
+                    b.Property<Point>("DropoffPoint")
+                        .IsRequired()
+                        .HasColumnType("geometry(Point, 4326)")
+                        .HasColumnName("dropoff_point");
+
+                    b.Property<DateTimeOffset>("InsertedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("inserted_at");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<Guid>("PassengerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("passenger_id");
+
+                    b.Property<Guid>("PassengerRouteId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("passenger_route_id");
+
+                    b.Property<Point>("PickupPoint")
+                        .IsRequired()
+                        .HasColumnType("geometry(Point, 4326)")
+                        .HasColumnName("pickup_point");
+
+                    b.Property<TimeOnly>("PickupTime")
+                        .HasColumnType("time without time zone")
+                        .HasColumnName("pickup_time");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(12, 2)
+                        .HasColumnType("numeric(12,2)")
+                        .HasColumnName("price");
+
+                    b.Property<double>("SharedDistanceMeters")
+                        .HasColumnType("double precision")
+                        .HasColumnName("shared_distance_meters");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<double>("WalkFromDropoffMeters")
+                        .HasColumnType("double precision")
+                        .HasColumnName("walk_from_dropoff_meters");
+
+                    b.Property<double>("WalkToPickupMeters")
+                        .HasColumnType("double precision")
+                        .HasColumnName("walk_to_pickup_meters");
+
+                    b.HasKey("Id")
+                        .HasName("pk_route_matches");
+
+                    b.HasIndex("DriverId")
+                        .HasDatabaseName("ix_route_matches_driver_id");
+
+                    b.HasIndex("PassengerId")
+                        .HasDatabaseName("ix_route_matches_passenger_id");
+
+                    b.HasIndex("PassengerRouteId")
+                        .HasDatabaseName("ix_route_matches_passenger_route_id");
+
+                    b.HasIndex("DriverRouteId", "PassengerRouteId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_route_matches_driver_route_id_passenger_route_id");
+
+                    b.ToTable("route_matches", (string)null);
+                });
+
+            modelBuilder.Entity("TwoGether.Domain.Routes.DriverRoute", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("Days")
+                        .HasColumnType("integer")
+                        .HasColumnName("days");
+
+                    b.Property<TimeOnly>("DepartureTime")
+                        .HasColumnType("time without time zone")
+                        .HasColumnName("departure_time");
+
+                    b.Property<Point>("Destination")
+                        .IsRequired()
+                        .HasColumnType("geometry(Point, 4326)")
+                        .HasColumnName("destination");
+
+                    b.Property<double>("DistanceMeters")
+                        .HasColumnType("double precision")
+                        .HasColumnName("distance_meters");
+
+                    b.Property<Guid>("DriverId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("driver_id");
+
+                    b.Property<double>("DurationSeconds")
+                        .HasColumnType("double precision")
+                        .HasColumnName("duration_seconds");
+
+                    b.Property<DateTimeOffset>("InsertedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("inserted_at");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<Point>("Origin")
+                        .IsRequired()
+                        .HasColumnType("geometry(Point, 4326)")
+                        .HasColumnName("origin");
+
+                    b.Property<LineString>("Path")
+                        .IsRequired()
+                        .HasColumnType("geometry(LineString, 4326)")
+                        .HasColumnName("path");
+
+                    b.Property<int>("Seats")
+                        .HasColumnType("integer")
+                        .HasColumnName("seats");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<Guid>("VehicleId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("vehicle_id");
+
+                    b.Property<uint>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
+                    b.HasKey("Id")
+                        .HasName("pk_driver_routes");
+
+                    b.HasIndex("DriverId")
+                        .HasDatabaseName("ix_driver_routes_driver_id");
+
+                    b.HasIndex("VehicleId")
+                        .HasDatabaseName("ix_driver_routes_vehicle_id");
+
+                    b.ToTable("driver_routes", (string)null);
+                });
+
+            modelBuilder.Entity("TwoGether.Domain.Routes.PassengerRoute", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("Days")
+                        .HasColumnType("integer")
+                        .HasColumnName("days");
+
+                    b.Property<Point>("Destination")
+                        .IsRequired()
+                        .HasColumnType("geometry(Point, 4326)")
+                        .HasColumnName("destination");
+
+                    b.Property<TimeOnly>("EarliestPickup")
+                        .HasColumnType("time without time zone")
+                        .HasColumnName("earliest_pickup");
+
+                    b.Property<DateTimeOffset>("InsertedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("inserted_at");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<TimeOnly>("LatestPickup")
+                        .HasColumnType("time without time zone")
+                        .HasColumnName("latest_pickup");
+
+                    b.Property<Point>("Origin")
+                        .IsRequired()
+                        .HasColumnType("geometry(Point, 4326)")
+                        .HasColumnName("origin");
+
+                    b.Property<Guid>("PassengerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("passenger_id");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<uint>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
+                    b.HasKey("Id")
+                        .HasName("pk_passenger_routes");
+
+                    b.HasIndex("PassengerId")
+                        .HasDatabaseName("ix_passenger_routes_passenger_id");
+
+                    b.ToTable("passenger_routes", (string)null);
+                });
+
             modelBuilder.Entity("TwoGether.Domain.Users.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -268,6 +503,50 @@ namespace TwoGether.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_refresh_tokens_users_user_id");
+                });
+
+            modelBuilder.Entity("TwoGether.Domain.Matches.RouteMatch", b =>
+                {
+                    b.HasOne("TwoGether.Domain.Routes.DriverRoute", null)
+                        .WithMany()
+                        .HasForeignKey("DriverRouteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_route_matches_driver_routes_driver_route_id");
+
+                    b.HasOne("TwoGether.Domain.Routes.PassengerRoute", null)
+                        .WithMany()
+                        .HasForeignKey("PassengerRouteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_route_matches_passenger_routes_passenger_route_id");
+                });
+
+            modelBuilder.Entity("TwoGether.Domain.Routes.DriverRoute", b =>
+                {
+                    b.HasOne("TwoGether.Domain.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("DriverId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_driver_routes_users_driver_id");
+
+                    b.HasOne("TwoGether.Domain.Vehicles.Vehicle", null)
+                        .WithMany()
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_driver_routes_vehicles_vehicle_id");
+                });
+
+            modelBuilder.Entity("TwoGether.Domain.Routes.PassengerRoute", b =>
+                {
+                    b.HasOne("TwoGether.Domain.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("PassengerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_passenger_routes_users_passenger_id");
                 });
 
             modelBuilder.Entity("TwoGether.Domain.Vehicles.Vehicle", b =>

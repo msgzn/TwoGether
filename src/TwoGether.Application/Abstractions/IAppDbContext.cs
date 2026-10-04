@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using TwoGether.Domain.Auth;
+using TwoGether.Domain.Matches;
+using TwoGether.Domain.Routes;
 using TwoGether.Domain.Users;
 using TwoGether.Domain.Vehicles;
 
@@ -11,4 +14,9 @@ public interface IAppDbContext
     DbSet<Vehicle> Vehicles { get; }
     DbSet<PhoneVerification> PhoneVerifications { get; }
     DbSet<RefreshToken> RefreshTokens { get; }
+    DbSet<DriverRoute> DriverRoutes { get; }
+    DbSet<PassengerRoute> PassengerRoutes { get; }
+    DbSet<RouteMatch> RouteMatches { get; }
+
+    DatabaseFacade Database { get; }
 }
