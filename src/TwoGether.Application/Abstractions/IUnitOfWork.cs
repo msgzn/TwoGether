@@ -2,6 +2,6 @@ namespace TwoGether.Application.Abstractions;
 
 public interface IUnitOfWork
 {
-    Task<int> SaveChangesAsync(CancellationToken ct);
-    Task ExecuteInTransactionAsync(Func<Task> action, CancellationToken ct);
+    /// <summary>Atomically persists every change made to tracked aggregates.</summary>
+    Task SaveChangesAsync(CancellationToken ct);
 }

@@ -1,8 +1,10 @@
+using TwoGether.Domain.Common;
+
 namespace TwoGether.Application.Abstractions;
 
-public interface IRepository<T> where T : class
+public interface IRepository<TAggregate> where TAggregate : AggregateRoot
 {
-    Task<T?> GetByIdAsync(Guid id, CancellationToken ct);
-    Task AddAsync(T entity, CancellationToken ct);
-    void Remove(T entity);
+    Task<TAggregate?> GetByIdAsync(Guid id, CancellationToken ct);
+    void Add(TAggregate aggregate);
+    void Remove(TAggregate aggregate);
 }

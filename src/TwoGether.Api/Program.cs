@@ -1,25 +1,70 @@
+using Mediator;
+using Serilog;
+using TwoGether.Api.Infrastructure;
+using TwoGether.Application;
+using TwoGether.Application.Abstractions;
+using TwoGether.Application.Behaviors;
 using TwoGether.Infrastructure;
 using TwoGether.Persistence;
 
-var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
 
-builder.Services.AddControllers();
-builder.Services.AddOpenApi();
-
-builder.Services.AddPersistence(builder.Configuration.GetConnectionString("Default")!);
-builder.Services.AddInfrastructure();
-
-var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
+try
 {
-    app.MapOpenApi();
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.Services.AddSerilog((services, logger) => logger
+        .ReadFrom.Configuration(builder.Configuration)
+        .ReadFrom.Services(services));
+
+    builder.Services
+        .AddApplication()
+        .AddInfrastructure()
+        .AddPersistence(builder.Configuration);
+
+    builder.Services.AddMediator((MediatorOptions options) =>
+    {
+        options.ServiceLifetime = ServiceLifetime.Scoped;
+        options.PipelineBehaviors = [typeof(ValidationBehavior<,>)];
+    });
+
+    builder.Services.AddControllers();
+    builder.Services.AddOpenApi(options => options.AddDocumentTransformer<CurrentUserHeaderTransformer>());
+    builder.Services.AddProblemDetails();
+    builder.Services.AddExceptionHandler<ApiExceptionHandler>();
+    builder.Services.AddHttpContextAccessor();
+    builder.Services.AddScoped<ICurrentUser, HeaderCurrentUser>();
+
+    var app = builder.Build();
+
+    app.UseSerilogRequestLogging(options =>
+        options.EnrichDiagnosticContext = (diagnostics, http) =>
+            diagnostics.Set("UserId", http.Request.Headers[HeaderCurrentUser.HeaderName].ToString()));
+
+    app.UseExceptionHandler();
+    app.UseStatusCodePages();
+
+    if (app.Environment.IsDevelopment())
+    {
+        app.MapOpenApi();
+        app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "TwoGether API"));
+        await app.Services.MigrateDatabaseAsync();
+    }
+
+    app.UseHttpsRedirection();
+    app.MapControllers();
+
+    app.Run();
+}
+catch (Exception ex) when (ex is not HostAbortedException)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+public abstract partial class Program;
