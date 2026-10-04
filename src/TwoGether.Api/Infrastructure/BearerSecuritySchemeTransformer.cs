@@ -3,24 +3,26 @@ using Microsoft.OpenApi;
 
 namespace TwoGether.Api.Infrastructure;
 
-internal sealed class CurrentUserHeaderTransformer : IOpenApiDocumentTransformer
+internal sealed class BearerSecuritySchemeTransformer : IOpenApiDocumentTransformer
 {
+    private const string SchemeName = "Bearer";
+
     public Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken ct)
     {
         document.Components ??= new OpenApiComponents();
         document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
-        document.Components.SecuritySchemes[HeaderCurrentUser.HeaderName] = new OpenApiSecurityScheme
+        document.Components.SecuritySchemes[SchemeName] = new OpenApiSecurityScheme
         {
-            Type = SecuritySchemeType.ApiKey,
-            In = ParameterLocation.Header,
-            Name = HeaderCurrentUser.HeaderName,
-            Description = "Temporary stand-in for authentication: any user GUID, e.g. 0199a000-0000-7000-8000-000000000001",
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT",
+            Description = "Access token from POST /api/Auth/verify-code",
         };
 
         document.Security ??= [];
         document.Security.Add(new OpenApiSecurityRequirement
         {
-            [new OpenApiSecuritySchemeReference(HeaderCurrentUser.HeaderName, document)] = [],
+            [new OpenApiSecuritySchemeReference(SchemeName, document)] = [],
         });
 
         return Task.CompletedTask;

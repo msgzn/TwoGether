@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TwoGether.Application.Abstractions;
 using TwoGether.Persistence.Interceptors;
-using TwoGether.Persistence.Repositories;
 
 namespace TwoGether.Persistence;
 

@@ -53,7 +53,7 @@ public class LayerDependencyTests
     public void Persistence_implementations_are_internal()
     {
         var result = Types.InAssembly(PersistenceAssembly)
-            .That().ResideInNamespaceStartingWith($"{Persistence}.Repositories")
+            .That().ResideInNamespaceStartingWith($"{Persistence}.Configurations")
             .Should().NotBePublic()
             .GetResult();
 
